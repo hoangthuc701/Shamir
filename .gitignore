@@ -1,0 +1,5 @@
+./results/
+./reproduction_image/
+./__pycache__/
+*.gif
+*.txt
