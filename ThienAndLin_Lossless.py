@@ -44,6 +44,8 @@ def generate_image(image_file, n, k):
     img_original_pixels = np.array(img)
     img_process = [] 
     
+    np.savetxt('original_image.txt', img_original_pixels.astype(int) , fmt='%s', delimiter=',')
+
     # Với các pixel có giá trị > 250, đổi giá trị thành 250
     for r in range(img_original_pixels.shape[0]):
         img_process.append([])
@@ -56,9 +58,6 @@ def generate_image(image_file, n, k):
     
     img_pixels = convertListToNpArray(img_process,k)
 
-    np.savetxt('original_image.txt', img_pixels.astype(int) , fmt='%s', delimiter=',')
-    img_original = Image.fromarray(img_pixels)
-    img_original.save("original_after_format.gif")
     # mảng lưu các hình sảnh kết quả
     if (img_pixels.shape[1] % k == 0):
         add_one = 0
@@ -81,9 +80,9 @@ def generate_image(image_file, n, k):
 
     # ghi các file ảnh xuống thành từng file
     for i in range(n):
-        image = Image.fromarray(img_result_pixels[i])
+        image = Image.fromarray(img_result_pixels[i]).convert('L')
         
-        image.save("./results/"+str(i+1)+".gif")
+        image.save("./results/"+str(i+1)+".bmp")
 
     print("Done")
 
@@ -135,11 +134,28 @@ def reproduction_image(folder, n, k , extr_image_file):
             for j in range(k):
                 original_image[r][c*k+j] = result[j] 
 
-    image = Image.fromarray(original_image)
-    np.savetxt('reproduction_image.txt', original_image.astype(int) , fmt='%s', delimiter=',')
+    # xử lý lại ảnh
+    img_r = 0
+    img_c = 0
+    result = np.zeros(shape=(img_width,image_height*k))
+    for r in range(img_width):
+        img_r = r
+        img_c = 0
+        c = 0
+        while c < image_height*k:
+            if original_image[r][c] == 250:
+                result[img_r][img_c] = original_image[r][c] + original_image[r][c+1]
+                c = c + 1
+            else:
+                result[img_r][img_c] = original_image[r][c]
+            img_c = img_c + 1
+            c = c + 1 
+
+    image = Image.fromarray(result.astype(np.uint8))
+    np.savetxt('reproduction_image.txt', result.astype(int) , fmt='%s', delimiter=',')
     image.save(extr_image_file)
     # lưu ảnh xuóng
     print("Done")
 
-generate_image('./lena.gif',10,8)
-# reproduction_image('./results',10, 8,'reproduction_lena.gif')
+generate_image('./lena.bmp',10,8)
+reproduction_image('./results',10, 8,'reproduction_lena.bmp')

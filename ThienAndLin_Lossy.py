@@ -30,7 +30,7 @@ def generate_image(image_file, n, k):
                 img_pixels[r][c] = 250
     np.savetxt('original_image.txt', img_pixels.astype(int) , fmt='%s', delimiter=',')
     img_original = Image.fromarray(img_pixels)
-    img_original.save("original_after_format.gif")
+    img_original.save("original_after_format.bmp")
     # mảng lưu các hình ảnh kết quả
     if (img_pixels.shape[1] % k == 0):
         add_one = 0
@@ -54,9 +54,9 @@ def generate_image(image_file, n, k):
 
     # ghi các file ảnh xuống thành từng file
     for i in range(n):
-        image = Image.fromarray(img_result_pixels[i])
+        image = Image.fromarray(img_result_pixels[i]).convert('L')
         
-        image.save("./results/"+str(i+1)+".gif")
+        image.save("./results/"+str(i+1)+".bmp")
 
     print("Done")
 
@@ -108,11 +108,11 @@ def reproduction_image(folder, n, k , extr_image_file):
             for j in range(k):
                 original_image[r][c*k+j] = result[j] 
 
-    image = Image.fromarray(original_image)
+    image = Image.fromarray(original_image.astype(np.uint8))
     np.savetxt('reproduction_image.txt', original_image.astype(int) , fmt='%s', delimiter=',')
     image.save(extr_image_file)
     # lưu ảnh xuóng
     print("Done")
 
-generate_image('./lena.gif',10,8)
-reproduction_image('./results',10, 8,'reproduction_lena.gif')
+generate_image('./lena.bmp',10,8)
+reproduction_image('./results',10, 8,'reproduction_lena.bmp')
