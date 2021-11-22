@@ -180,26 +180,26 @@ class Shamir:
 
         return xs,ys
 
-# Phân chia tin mật 
-s = 51
-n = 10
-k = 1
-p = 251
+# # Phân chia tin mật 
+# s = 51
+# n = 10
+# k = 1
+# p = 251
 
-shamir = Shamir(p)
-xs, ys = shamir.split(s,n,k)
+# shamir = Shamir(p)
+# xs, ys = shamir.split(s,n,k)
 
-# Chọn ngẫu nhiên n' phần để tái tạo tin mật
+# # Chọn ngẫu nhiên n' phần để tái tạo tin mật
 
-xs1, ys1 = shuffle(xs, ys, random_state = 0)
-n_prime = k - 1
-rec_s = shamir.join(xs1[:n_prime], ys1[:n_prime], k)
-print(rec_s)
+# xs1, ys1 = shuffle(xs, ys, random_state = 0)
+# n_prime = k - 1
+# rec_s = shamir.join(xs1[:n_prime], ys1[:n_prime], k)
+# print(rec_s)
 
-n_prime = k
-rec_s1 = shamir.join(xs1[:n_prime], ys1[:n_prime], k)
-print(rec_s1)
+# n_prime = k
+# rec_s1 = shamir.join(xs1[:n_prime], ys1[:n_prime], k)
+# print(rec_s1)
 
-n_prime = k + 1
-rec_s2 = shamir.join(xs1[:n_prime], ys1[:n_prime], k)
-print(rec_s2)
+# n_prime = k + 1
+# rec_s2 = shamir.join(xs1[:n_prime], ys1[:n_prime], k)
+# print(rec_s2)

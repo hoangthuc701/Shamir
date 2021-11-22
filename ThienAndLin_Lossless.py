@@ -5,6 +5,23 @@ import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import shape
 from Shamir_Finite_Field import Shamir
 
+def removePading(images, k ):
+    width = images.shape[1]
+    height = images.shape[0]
+
+    number_of_0 = images.shape[1]
+    for r in range(0, height):
+        i = width - 1
+        num0 = 0
+        while images[r][i] == 0:
+            i = i - 1
+            num0 = num0 + 1
+        number_of_0 = min(number_of_0, num0)
+    y_heigh = width - number_of_0
+    y_low = 0
+    x_low = 0
+    x_heigh = height
+    return images[x_low:x_heigh,y_low:y_heigh]
 
 def get_file_name(path):
     if not os.path.isdir(path):
