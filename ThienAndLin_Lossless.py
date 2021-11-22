@@ -1,9 +1,11 @@
 import numpy as np
 import os
+import sys
 from PIL import Image
 import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import shape
 from Shamir_Finite_Field import Shamir
+
 
 def removePading(images, k ):
     width = images.shape[1]
@@ -61,8 +63,7 @@ def generate_image(image_file, n, k):
     img_original_pixels = np.array(img)
     img_process = [] 
     
-    np.savetxt('original_image.txt', img_original_pixels.astype(int) , fmt='%s', delimiter=',')
-
+    xs = np.arange(1,n+1)
     # Với các pixel có giá trị > 250, đổi giá trị thành 250
     for r in range(img_original_pixels.shape[0]):
         img_process.append([])
@@ -89,7 +90,7 @@ def generate_image(image_file, n, k):
     for r in range(img_pixels.shape[0]):
         for c in range(0,img_pixels.shape[1],k):
             coefficients=img_pixels[r][c:c+k]
-            share_keys = shamir.generateKeyWithCoefficients(n,coefficients)
+            _ , share_keys = shamir.splitWithCoefficients(xs,coefficients)
 
             # ghép key cho từng ảnh
             for i in range(n):
@@ -122,11 +123,15 @@ def reproduction_image(folder, n, k , extr_image_file):
     print("Running....")
 
     # Khởi tạo mảng để lưu 
-    img_pixels = [[]]*n
+    img_pixels = []*n
+    xs = []
     with os.scandir(folder) as entries:
         for entry in entries:
-            img_pixels[int(get_file_name(entry.name)) -1 ] = np.array(Image.open(folder +"/"+entry.name))
-
+            img_pixels.append(np.array(Image.open(folder +"/"+entry.name)))
+            xs.append(int(get_file_name(entry.name)))
+    
+    if (len(xs)<k):
+        sys.exit('Number of images must be grater than k!')
 
     img_width, image_height = findImageSize(n, img_pixels)
     original_image = np.zeros(shape=(img_width,image_height*k))
@@ -135,17 +140,10 @@ def reproduction_image(folder, n, k , extr_image_file):
     for r in range(img_width):
         for c in range(image_height):
             values = []
-            for i in range(n):
-                if img_pixels != []:
-                    values.append(img_pixels[i][r][c])
+            for i in range(len(xs)):
+                values.append(img_pixels[i][r][c])
             
-            result = shamir.extractCoefficients(k,values)
-
-            # # xử lý ở hàng cuối cùng
-            # if c == image_height-1:
-            #     index = 0
-            #     while result[index]==0:
-            #         del result[index]
+            result = shamir.findAllCoefficients(xs,values,k)
 
             # gán vào ảnh để khôi phục ảnh gốc
             for j in range(k):
@@ -168,11 +166,13 @@ def reproduction_image(folder, n, k , extr_image_file):
             img_c = img_c + 1
             c = c + 1 
 
+    # xử lý các phần tử 0 thừa ở phía cuối array lúc thêm vào
+    result = removePading(result, k)
+
     image = Image.fromarray(result.astype(np.uint8))
-    np.savetxt('reproduction_image.txt', result.astype(int) , fmt='%s', delimiter=',')
     image.save(extr_image_file)
     # lưu ảnh xuóng
     print("Done")
 
-generate_image('./lena.bmp',10,8)
-reproduction_image('./results',10, 8,'reproduction_lena.bmp')
+generate_image('./lena.bmp',10,6)
+reproduction_image('./results',10, 6,'reproduction_lena.bmp')

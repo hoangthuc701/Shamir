@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import sys
 from PIL import Image
 import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import shape
@@ -113,6 +114,9 @@ def reproduction_image(folder, n, k , extr_image_file):
             img_pixels.append(np.array(Image.open(folder +"/"+entry.name)))
             xs.append(int(get_file_name(entry.name)))
 
+    if (len(xs)<k):
+        sys.exit('Number of images must be grater than k!')
+
     img_width, image_height = findImageSize(n, img_pixels)
     original_image = np.zeros(shape=(img_width,image_height*k))
     
@@ -131,7 +135,6 @@ def reproduction_image(folder, n, k , extr_image_file):
 
     # xử lý các phần tử 0 thừa ở phía cuối array lúc thêm vào
     original_image = removePading(original_image, k)
-    print(original_image.shape)
 
     image = Image.fromarray(original_image.astype(np.uint8))
     # np.savetxt('reproduction_image.txt', original_image.astype(int) , fmt='%s', delimiter=',')
@@ -139,5 +142,5 @@ def reproduction_image(folder, n, k , extr_image_file):
     # lưu ảnh xuóng
     print("Done")
 
-# generate_image('./lena.bmp',10,6)
+generate_image('./lena.bmp',10,6)
 reproduction_image('./results',10, 6,'reproduction_lena.bmp')
