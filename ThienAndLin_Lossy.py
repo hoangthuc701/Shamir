@@ -7,11 +7,13 @@ from numpy.core.fromnumeric import shape
 from Shamir_Finite_Field import Shamir
 
 def get_file_name(path):
+    '''
+    Hàm lấy filename khi truyền vào tên file và extension
+    '''
     if not os.path.isdir(path):
         return os.path.splitext(os.path.basename(path))[0].split(".")[0]
 
 def generate_image(image_file, n, k):
-
     print("Start")
     p = 251
 
@@ -52,7 +54,6 @@ def generate_image(image_file, n, k):
     
     xs = np.arange(1,n+1)
     # duyệt các pixel theo thứ tự từng dòng, mỗi dòng duyệt tiếp k....
-
     for r in range(img_pixels.shape[0]):
         for c in range(0,img_pixels.shape[1],k):
             coefficients=img_pixels[r][c:c+k] 
@@ -71,7 +72,7 @@ def generate_image(image_file, n, k):
     print("Done")
 
 
-def removePading(images, k ):
+def removeRedundantColumn(images):
     width = images.shape[1]
     height = images.shape[0]
 
@@ -89,14 +90,11 @@ def removePading(images, k ):
     x_heigh = height
     return images[x_low:x_heigh,y_low:y_heigh]
 
-def findImageSize(n,images):
-    i = 0
-    while i< n and images[i] == []:
-        i = i + 1
-
-    if (i>=n):
-        return (0,0)
-    return (images[i].shape[0],images[i].shape[1])
+def findImageSize(images):
+    '''
+    Hàm lấy kích thước của hình ảnh
+    '''
+    return (images[0].shape[0],images[0].shape[1])
 
 def reproduction_image(folder, n, k , extr_image_file):    
     print("Start")
@@ -117,7 +115,7 @@ def reproduction_image(folder, n, k , extr_image_file):
     if (len(xs)<k):
         sys.exit('Number of images must be grater than k!')
 
-    img_width, image_height = findImageSize(n, img_pixels)
+    img_width, image_height = findImageSize(img_pixels)
     original_image = np.zeros(shape=(img_width,image_height*k))
     
     # duyệt ảnh
@@ -134,7 +132,7 @@ def reproduction_image(folder, n, k , extr_image_file):
                 original_image[r][c*k+j] = result[j] 
 
     # xử lý các phần tử 0 thừa ở phía cuối array lúc thêm vào
-    original_image = removePading(original_image, k)
+    original_image = removeRedundantColumn(original_image)
 
     image = Image.fromarray(original_image.astype(np.uint8))
     # np.savetxt('reproduction_image.txt', original_image.astype(int) , fmt='%s', delimiter=',')
@@ -142,5 +140,5 @@ def reproduction_image(folder, n, k , extr_image_file):
     # lưu ảnh xuóng
     print("Done")
 
-generate_image('./flower.bmp',10,6)
-reproduction_image('./results',10, 6,'reproduction_flower.bmp')
+generate_image('./lena.bmp',10,6)
+reproduction_image('./results',10, 6,'reproduction_lena.bmp')
