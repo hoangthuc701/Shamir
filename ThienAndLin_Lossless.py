@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from numpy.core.fromnumeric import shape
 from Shamir_Finite_Field import Shamir
 
-
 def removePading(images, k ):
     width = images.shape[1]
     height = images.shape[0]
@@ -59,7 +58,8 @@ def generate_image(image_file, n, k):
 
     print("Running....")
 
-    img = Image.open(image_file)
+    img = Image.open(image_file).convert('L')
+
     img_original_pixels = np.array(img)
     img_process = [] 
     
@@ -103,7 +103,6 @@ def generate_image(image_file, n, k):
         image.save("./results/"+str(i+1)+".bmp")
 
     print("Done")
-
 
 def findImageSize(n,images):
     i = 0
@@ -174,5 +173,5 @@ def reproduction_image(folder, n, k , extr_image_file):
     # lưu ảnh xuóng
     print("Done")
 
-generate_image('./lena.bmp',10,6)
-reproduction_image('./results',10, 6,'reproduction_lena.bmp')
+generate_image('./flower.bmp',8,5)
+reproduction_image('./results',8, 5,'reproduction_flower.bmp')

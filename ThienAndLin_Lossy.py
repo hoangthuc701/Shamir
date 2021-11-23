@@ -142,5 +142,5 @@ def reproduction_image(folder, n, k , extr_image_file):
     # lưu ảnh xuóng
     print("Done")
 
-generate_image('./lena.bmp',10,6)
-reproduction_image('./results',10, 6,'reproduction_lena.bmp')
+generate_image('./flower.bmp',10,6)
+reproduction_image('./results',10, 6,'reproduction_flower.bmp')
