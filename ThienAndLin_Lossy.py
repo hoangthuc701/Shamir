@@ -139,6 +139,8 @@ def reproduction_image(folder, n, k , extr_image_file):
     image.save(extr_image_file)
     # lưu ảnh xuóng
     print("Done")
-
-generate_image('./lena.bmp',10,6)
-reproduction_image('./results',10, 6,'reproduction_lena.bmp')
+    
+n = 10
+k = 6
+generate_image('./lena.bmp',n,k)
+reproduction_image('./results',n, k,'reproduction_lena.bmp')

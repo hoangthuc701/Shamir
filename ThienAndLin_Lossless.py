@@ -200,5 +200,7 @@ def reproduction_image(folder, n, k , extr_image_file):
     
     print("Done")
 
-generate_image('./lena.bmp',8,5)
-reproduction_image('./results',8, 5,'reproduction_lena.bmp')
+n = 8
+k = 5
+generate_image('./lena.bmp',n,k)
+reproduction_image('./results',n, k,'reproduction_lena.bmp')
